@@ -126,8 +126,8 @@ function squareSelected(evt, currentPlayer) {
     client.get('/public/game/unbeatable_tictactoe_v2/ai_server.py?board='+String(board), function(response) {
         // do something with response
         console.log(response)
-        fillSquareWithMarker(document.getElementById(response), currentPlayer);
-        updateBoard(response, currentPlayer);
+        fillSquareWithMarker(document.getElementById(parseInt(response)), currentPlayer);
+        updateBoard(parseInt(response), currentPlayer);
         checkForWinner();
         switchPlayers();
     });
