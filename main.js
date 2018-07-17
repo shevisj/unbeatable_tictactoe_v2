@@ -121,7 +121,9 @@ function createBoard() {
 /*** call this function whenever a square is clicked or tapped ***/
 function squareSelected(evt, currentPlayer) {
   if (checkForWinner()) {
-    alert("Game is over! "+document.getElementById("label").textContent);
+    if(confirm("Game is over! "+document.getElementById("label").textContent)) {
+      newGame();
+    }
   } else {
     document.getElementById("ai_first").disabled = true;
     var square = evt.target;
