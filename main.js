@@ -73,7 +73,7 @@ function init() {
 
   /* add event listeners */
   document.querySelector("input.button").addEventListener(up, newGame, false);
-  document.querySelector("ai_first").addEventListener(up, getMoveFromAI(getCurrentPlayer()), false);
+  document.querySelector("input.ai_button").addEventListener(up, getMoveFromAI(getCurrentPlayer()), false);
 
   squares = document.getElementsByTagName("td");
   for (var s = 0; s < squares.length; s++) {
