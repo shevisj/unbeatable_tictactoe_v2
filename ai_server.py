@@ -1,5 +1,5 @@
-from cgi import parse_qs
-from wsgiref.simple_server import make_server
+#!/usr/bin/env python
+
 import copy
 
 the_move = 3
@@ -83,32 +83,21 @@ def Minimax(a_board, value, depth, symbol):
         minScoreIndex = findMinVal(scores)
         return scores[minScoreIndex]
 
-def simple_app(environ, start_response):
 
-    headers = [('Content-Type', 'text/plain')]
+# enable debugging
+import cgitb
+cgitb.enable()
 
-    path = environ.get('PATH_INFO', '').lstrip('/')
-    if environ['REQUEST_METHOD'] == 'GET' and path == "":  # GET
-        status = '200 OK'
-        start_response(status, headers)
-        d = parse_qs(environ['QUERY_STRING'])  # turns the qs to a dict
-        board = []
-        if "board" in d:
-            board = str(d["board"][0]).split(',')
-        else:
-            print d
-        print board
-        node = Minimax(board, 0, 0, 'O')
-        return ["%s" % the_move]
-    else:
-        status = '404 NOT FOUND'
-        start_response(status, headers)
-        return "Invalid"
+import cgi
+import os
 
-if __name__ == "__main__":
-    try:
-        httpd = make_server('0.0.0.0', 1337, simple_app)
-        print "Serving on port 1337..."
-        httpd.serve_forever()
-    except KeyboardInterrupt as err:
-        print "User pressed Ctrl + C : " + str(err)
+print "Content-type: text/html"
+print
+
+d = cgi.parse_qs(os.environ['QUERY_STRING'])
+if "board" in d:
+    board = str(d["board"][0]).split(',')
+    node = Minimax(board, 0, 0, 'O')
+    print the_move
+else:
+    print "Invalid query string."
