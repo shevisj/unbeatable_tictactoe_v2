@@ -122,17 +122,19 @@ function squareSelected(evt, currentPlayer) {
     updateBoard(square.id, currentPlayer);
     checkForWinner();
     switchPlayers();
-    var client = new HttpClient();
-    var cp = getCurrentPlayer();
-    client.get('/public/game/ai_server.py?board='+String(board)+'&p='+cp, function(response) {
-        // do something with response
-        console.log(response)
-        fillSquareWithMarker(document.getElementById(parseInt(response)), cp);
-        updateBoard(parseInt(response), cp);
-        checkForWinner();
-        switchPlayers();
-    });
   }
+}
+
+function getMoveFromAI(currentPlayer) {
+  var client = new HttpClient();
+  client.get('/public/game/ai_server.py?board='+String(board)+'&p='+currentPlayer, function(response) {
+      // do something with response
+      console.log(response)
+      fillSquareWithMarker(document.getElementById(parseInt(response)), currentPlayer);
+      updateBoard(parseInt(response), currentPlayer);
+      checkForWinner();
+      switchPlayers();
+  });
 }
 
 /*** create an X or O div and append it to the square ***/
@@ -164,15 +166,13 @@ function updateBoard(index, marker) {
   3 4 5
   6 7 8
 */
-function declareWinner() {
-  if (confirm("We have a winner!  New game?")) {
-    newGame();
-  }
+function declareWinner(winner) {
+  document.getElementById("label").textContent=String(winner)+" Wins!";
 }
 
 function weHaveAWinner(a, b, c) {
   if ((board[a] === board[b]) && (board[b] === board[c]) && (board[a] != "" || board[b] != "" || board[c] != "")) {
-    setTimeout(declareWinner(), 100);
+    setTimeout(declareWinner(board[a]), 100);
     return true;
   }
   else
@@ -209,9 +209,7 @@ function checkForWinner() {
 
   /* if there's no winner but the board is full, ask the user if they want to start a new game */
   if (!JSON.stringify(board).match(/,"",/)) {
-    if (confirm("It's a draw. New game?")) {
-      newGame();
-    }
+    document.getElementById("label").textContent="It's a draw!";
   }
 }
 
