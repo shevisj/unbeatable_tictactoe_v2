@@ -151,7 +151,7 @@ function getMoveFromAI() {
   document.getElementById("label").textContent="AI is thinking...";
   client.get('/public/game/ai_server.py?board='+String(board)+'&p='+currentPlayer, function(response) {
       // do something with response
-      document.getElementById("label").textContent="Game In Progress";
+      document.getElementById("label").textContent="Make Your Move";
       fillSquareWithMarker(document.getElementById(parseInt(response)), currentPlayer);
       updateBoard(parseInt(response), currentPlayer);
       checkForWinner();
@@ -286,7 +286,7 @@ function newGame() {
   /* clear the currently stored game out of local storage */
   localStorage.removeItem('tic-tac-toe-board');
   localStorage.removeItem('last-player');
-  document.getElementById("label").textContent="Game In Progress";
+  document.getElementById("label").textContent="Make Your Move";
   document.getElementById("ai_first").disabled = false;
   /* create a new game */
   createBoard();
