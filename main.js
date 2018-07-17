@@ -145,6 +145,7 @@ function squareSelected(evt, currentPlayer) {
 }
 
 function getMoveFromAI() {
+  document.getElementById("ai_first").disabled = true;
   var currentPlayer = getCurrentPlayer()
   var client = new HttpClient();
   client.get('/public/game/ai_server.py?board='+String(board)+'&p='+currentPlayer, function(response) {
