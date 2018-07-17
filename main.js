@@ -64,6 +64,7 @@ var HttpClient = function() {
 /***************************************/
 var board = new Array(9);
 var client = new HttpClient();
+var squares;
 
 function init() {
   /* use touch events if they're supported, otherwise use mouse events */
@@ -72,7 +73,7 @@ function init() {
 
   /* add event listeners */
   document.querySelector("input.button").addEventListener(up, newGame, false);
-  var squares = document.getElementsByTagName("td");
+  squares = document.getElementsByTagName("td");
   for (var s = 0; s < squares.length; s++) {
     squares[s].addEventListener(down, function(evt){squareSelected(evt, getCurrentPlayer());}, false);
   }
@@ -124,7 +125,10 @@ function squareSelected(evt, currentPlayer) {
     switchPlayers();
     client.get('/public/game/unbeatable_tictactoe_v2/ai_server.py?board='+String(board), function(response) {
         // do something with response
-        alert(response)
+        fillSquareWithMarker(squares[response], currentPlayer);
+        updateBoard(response, currentPlayer);
+        checkForWinner();
+        switchPlayers();
     });
   }
 }
