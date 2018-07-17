@@ -1,10 +1,10 @@
 /*
   File: main.js
   Abstract: JavaScript file for TicTacToe sample.
-  
+
   Version: 1.0
-  
-  Disclaimer: IMPORTANT:  This Apple software is supplied to you by 
+
+  Disclaimer: IMPORTANT:  This Apple software is supplied to you by
   Apple Inc. ("Apple") in consideration of your agreement to the
   following terms, and your use, installation, modification or
   redistribution of this Apple software constitutes acceptance of these
@@ -18,8 +18,8 @@
   Software, with or without modifications, in source and/or binary forms;
   provided that if you redistribute the Apple Software in its entirety and
   without modifications, you must retain this notice and the following
-  text and disclaimers in all such redistributions of the Apple Software. 
-  Neither the name, trademarks, service marks or logos of Apple Inc. 
+  text and disclaimers in all such redistributions of the Apple Software.
+  Neither the name, trademarks, service marks or logos of Apple Inc.
   may be used to endorse or promote products derived from the Apple
   Software without specific prior written permission from Apple.  Except
   as expressly stated in this notice, no other rights or licenses, express
@@ -41,27 +41,42 @@
   AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
   STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
-  
+
   Copyright (C) 2010 Apple Inc. All Rights Reserved.
 */
+
+/* HTTP Client */
+var HttpClient = function() {
+    this.get = function(aUrl, aCallback) {
+        var anHttpRequest = new XMLHttpRequest();
+        anHttpRequest.onreadystatechange = function() {
+            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                aCallback(anHttpRequest.responseText);
+        }
+
+        anHttpRequest.open( "GET", aUrl, true );
+        anHttpRequest.send( null );
+    }
+}
 
 /***************************************/
 /*         intial setup                */
 /***************************************/
 var board = new Array(9);
+var client = new HttpClient();
 
 function init() {
   /* use touch events if they're supported, otherwise use mouse events */
-  var down = "mousedown"; var up = "mouseup"; 
+  var down = "mousedown"; var up = "mouseup";
   if ('createTouch' in document) { down = "touchstart"; up ="touchend"; }
-  
+
   /* add event listeners */
   document.querySelector("input.button").addEventListener(up, newGame, false);
   var squares = document.getElementsByTagName("td");
   for (var s = 0; s < squares.length; s++) {
     squares[s].addEventListener(down, function(evt){squareSelected(evt, getCurrentPlayer());}, false);
   }
-  
+
   /* create the board and set the initial player */
   createBoard();
   setInitialPlayer();
@@ -75,7 +90,7 @@ function createBoard() {
 
   /* create a board from the stored version, if a stored version exists */
   if (window.localStorage && localStorage.getItem('tic-tac-toe-board')) {
-    
+
     /* parse the string that represents our playing board to an array */
     board = (JSON.parse(localStorage.getItem('tic-tac-toe-board')));
     for (var i = 0; i < board.length; i++) {
@@ -85,9 +100,9 @@ function createBoard() {
     }
   }
   /* otherwise, create a clean board */
-  else {  
+  else {
     for (var i = 0; i < board.length; i++) {
-      board[i] = "";                               
+      board[i] = "";
       document.getElementById(i).innerHTML = "";
     }
   }
@@ -106,7 +121,11 @@ function squareSelected(evt, currentPlayer) {
     fillSquareWithMarker(square, currentPlayer);
     updateBoard(square.id, currentPlayer);
     checkForWinner();
-    switchPlayers(); 
+    switchPlayers();
+    client.get('http://localhost:1337/?board='+String(board), function(response) {
+        // do something with response
+        alert(response)
+    });
   }
 }
 
@@ -121,12 +140,12 @@ function fillSquareWithMarker(square, player) {
 /*** update our array which tracks the state of the board, and write the current state to local storage ***/
 function updateBoard(index, marker) {
   board[index] = marker;
-  
+
   /* HTML5 localStorage only allows storage of strings - convert our array to a string */
   var boardstring = JSON.stringify(board);
 
   /* store this string to localStorage, along with the last player who marked a square */
-  localStorage.setItem('tic-tac-toe-board', boardstring); 
+  localStorage.setItem('tic-tac-toe-board', boardstring);
   localStorage.setItem('last-player', getCurrentPlayer());
 }
 
@@ -163,7 +182,7 @@ function checkForWinner() {
     }
     a+=3; b+=3; c+=3;
   }
-    
+
   /* check columns */
   a = 0; b = 3; c = 6;
   while (c < board.length) {
@@ -181,7 +200,7 @@ function checkForWinner() {
   if (weHaveAWinner(2, 4, 6)) {
     return;
   }
-  
+
   /* if there's no winner but the board is full, ask the user if they want to start a new game */
   if (!JSON.stringify(board).match(/,"",/)) {
     if (confirm("It's a draw. New game?")) {
@@ -204,14 +223,14 @@ function setInitialPlayer() {
   var playerO = document.getElementById("O");
   playerX.className = "";
   playerO.className = "";
-    
+
   /* if there's no localStorage, or no last-player stored in localStorage, always set the first player to X by default */
   if (!window.localStorage || !localStorage.getItem('last-player')) {
     playerX.className = "current-player";
     return;
-  } 
+  }
 
-  var lastPlayer = localStorage.getItem('last-player');  
+  var lastPlayer = localStorage.getItem('last-player');
   if (lastPlayer == 'X') {
     playerO.className = "current-player";
   }
@@ -223,7 +242,7 @@ function setInitialPlayer() {
 function switchPlayers() {
   var playerX = document.getElementById("X");
   var playerO = document.getElementById("O");
-  
+
   if (playerX.className.match(/current-player/)) {
     playerO.className = "current-player";
     playerX.className = "";
@@ -234,15 +253,11 @@ function switchPlayers() {
   }
 }
 
-function newGame() {  
+function newGame() {
   /* clear the currently stored game out of local storage */
   localStorage.removeItem('tic-tac-toe-board');
   localStorage.removeItem('last-player');
-  
+
   /* create a new game */
   createBoard();
 }
-
-
-
-
