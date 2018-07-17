@@ -3,8 +3,8 @@
 import copy
 
 the_move = 3
-player = "X"
-opp = "O"
+player = "O"
+opp = "X"
 
 #Returns an array of all available moves in a given board state.
 def getPossibleMoves(a_board):
@@ -97,7 +97,7 @@ print
 d = cgi.parse_qs(os.environ['QUERY_STRING'])
 if "board" in d:
     board = str(d["board"][0]).split(',')
-    node = Minimax(board, 0, 0, 'O')
+    node = Minimax(board, 0, 0, player)
     print the_move
 else:
     print "Invalid query string."
