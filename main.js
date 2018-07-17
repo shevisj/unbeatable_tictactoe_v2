@@ -73,11 +73,18 @@ function init() {
 
   /* add event listeners */
   document.querySelector("input.button").addEventListener(up, newGame, false);
-  document.querySelector("input.ai_button").addEventListener(up, getMoveFromAI(getCurrentPlayer()), false);
+  document.getElementById("ai_first").addEventListener(up, getMoveFromAI(getCurrentPlayer()), false);
+  if (hasTouch) {
+    document.querySelector("input.button").addEventListener("touchend", newGame, false);
+    document.getElementById("ai_first").addEventListener("touchend", getMoveFromAI(getCurrentPlayer()), false);
+  }
 
   squares = document.getElementsByTagName("td");
   for (var s = 0; s < squares.length; s++) {
     squares[s].addEventListener(down, function(evt){squareSelected(evt, getCurrentPlayer());}, false);
+    if (hasTouch) {
+      squares[s].addEventListener("touchstart", function(evt){squareSelected(evt, getCurrentPlayer());}, false);
+    }
   }
 
   /* create the board and set the initial player */
