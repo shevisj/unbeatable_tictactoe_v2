@@ -69,22 +69,22 @@ function init() {
   /* use touch events if they're supported, otherwise use mouse events */
   var down = "mousedown"; var up = "mouseup";
   var hasTouch = false;
-  if ('createTouch' in document) { hasTouch = true;/*down = "touchstart"; up ="touchend"; */}
+  if ('createTouch' in document) { down = "touchstart"; up ="touchend"; }
 
   /* add event listeners */
   document.getElementById("new_game").addEventListener(up, newGame, false);
   document.getElementById("ai_first").addEventListener(up, getMoveFromAI, false);
-  if (hasTouch) {
+  /*if (hasTouch) {
     document.getElementById("new_game").addEventListener("touchend", newGame, false);
     document.getElementById("ai_first").addEventListener("touchend", getMoveFromAI, false);
-  }
+  }*/
 
   squares = document.getElementsByTagName("td");
   for (var s = 0; s < squares.length; s++) {
     squares[s].addEventListener(down, function(evt){squareSelected(evt, getCurrentPlayer());}, false);
-    if (hasTouch) {
+    /*if (hasTouch) {
       squares[s].addEventListener("touchstart", function(evt){squareSelected(evt, getCurrentPlayer());}, false);
-    }
+    }*/
   }
 
   /* create the board and set the initial player */
