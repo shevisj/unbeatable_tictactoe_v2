@@ -63,7 +63,6 @@ var HttpClient = function() {
 /*         intial setup                */
 /***************************************/
 var board = new Array(9);
-var client = new HttpClient();
 var squares;
 
 function init() {
@@ -123,9 +122,10 @@ function squareSelected(evt, currentPlayer) {
     updateBoard(square.id, currentPlayer);
     checkForWinner();
     switchPlayers();
+    var client = new HttpClient();
     client.get('/public/game/unbeatable_tictactoe_v2/ai_server.py?board='+String(board), function(response) {
         // do something with response
-        fillSquareWithMarker(squares[response], currentPlayer);
+        fillSquareWithMarker(document.getElementById(response), currentPlayer);
         updateBoard(response, currentPlayer);
         checkForWinner();
         switchPlayers();
