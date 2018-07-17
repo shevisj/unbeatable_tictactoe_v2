@@ -68,10 +68,13 @@ var squares;
 function init() {
   /* use touch events if they're supported, otherwise use mouse events */
   var down = "mousedown"; var up = "mouseup";
-  if ('createTouch' in document) { down = "touchstart"; up ="touchend"; }
+  var hasTouch = false;
+  if ('createTouch' in document) { hasTouch = true;/*down = "touchstart"; up ="touchend"; */}
 
   /* add event listeners */
   document.querySelector("input.button").addEventListener(up, newGame, false);
+  document.querySelector("ai_first").addEventListener(up, getMoveFromAI(getCurrentPlayer()), false);
+
   squares = document.getElementsByTagName("td");
   for (var s = 0; s < squares.length; s++) {
     squares[s].addEventListener(down, function(evt){squareSelected(evt, getCurrentPlayer());}, false);
@@ -110,18 +113,25 @@ function createBoard() {
 
 /*** call this function whenever a square is clicked or tapped ***/
 function squareSelected(evt, currentPlayer) {
-  var square = evt.target;
-  /* check to see if the square already contains an X or O marker */
-  if (square.className.match(/marker/)) {
-    alert("Sorry, that space is taken!  Please choose another square.");
-    return;
-  }
-  /* if not already marked, mark the square, update the array that tracks our board, check for a winner, and switch players */
-  else {
-    fillSquareWithMarker(square, currentPlayer);
-    updateBoard(square.id, currentPlayer);
-    checkForWinner();
-    switchPlayers();
+  if (checkForWinner()) {
+    alert("Game is over! "+document.getElementById("label").textContent);
+  } else {
+    document.getElementById("ai_first").disabled = true;
+    var square = evt.target;
+    /* check to see if the square already contains an X or O marker */
+    if (square.className.match(/marker/)) {
+      alert("Sorry, that space is taken!  Please choose another square.");
+      return;
+    }
+    /* if not already marked, mark the square, update the array that tracks our board, check for a winner, and switch players */
+    else {
+      fillSquareWithMarker(square, currentPlayer);
+      updateBoard(square.id, currentPlayer);
+      if (!checkForWinner());
+        switchPlayers();
+        getMoveFromAI(getCurrentPlayer());
+      }
+    }
   }
 }
 
@@ -184,7 +194,7 @@ function checkForWinner() {
   var a = 0; var b = 1; var c = 2;
   while (c < board.length) {
     if (weHaveAWinner(a, b, c)) {
-      return;
+      return true;
     }
     a+=3; b+=3; c+=3;
   }
@@ -193,23 +203,26 @@ function checkForWinner() {
   a = 0; b = 3; c = 6;
   while (c < board.length) {
     if (weHaveAWinner(a, b, c)) {
-      return;
+      return true;
     }
     a+=1; b+=1; c+=1;
   }
 
   /* check diagonal right */
   if (weHaveAWinner(0, 4, 8)) {
-    return;
+    return true;
   }
   /* check diagonal left */
   if (weHaveAWinner(2, 4, 6)) {
-    return;
+    return true;
   }
 
   /* if there's no winner but the board is full, ask the user if they want to start a new game */
   if (!JSON.stringify(board).match(/,"",/)) {
     document.getElementById("label").textContent="It's a draw!";
+    return true;
+  } else {
+    return false;
   }
 }
 
@@ -261,7 +274,8 @@ function newGame() {
   /* clear the currently stored game out of local storage */
   localStorage.removeItem('tic-tac-toe-board');
   localStorage.removeItem('last-player');
-
+  document.getElementById("label").textContent="Game In Progress";
+  document.getElementById("ai_first").disabled = false;
   /* create a new game */
   createBoard();
 }
