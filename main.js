@@ -127,7 +127,7 @@ function squareSelected(evt, currentPlayer) {
     else {
       fillSquareWithMarker(square, currentPlayer);
       updateBoard(square.id, currentPlayer);
-      if (!checkForWinner());
+      if (!checkForWinner()) {
         switchPlayers();
         getMoveFromAI(getCurrentPlayer());
       }
