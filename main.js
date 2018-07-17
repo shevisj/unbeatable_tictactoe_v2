@@ -122,7 +122,7 @@ function squareSelected(evt, currentPlayer) {
     updateBoard(square.id, currentPlayer);
     checkForWinner();
     switchPlayers();
-    client.get('http://localhost:1337/?board='+String(board), function(response) {
+    client.get('/public/game/unbeatable_tictactoe_v2/ai_server.py?board='+String(board), function(response) {
         // do something with response
         alert(response)
     });
