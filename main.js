@@ -124,6 +124,8 @@ function squareSelected(evt, currentPlayer) {
     if(confirm("Game is over! "+document.getElementById("label").textContent + " Start new game?")) {
       newGame();
     }
+  } else if (document.getElementById("label").textContent == "AI is thinking...") {
+    // Do nothing
   } else {
     document.getElementById("ai_first").disabled = true;
     var square = evt.target;
