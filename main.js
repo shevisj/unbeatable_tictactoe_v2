@@ -72,10 +72,10 @@ function init() {
   if ('createTouch' in document) { hasTouch = true;/*down = "touchstart"; up ="touchend"; */}
 
   /* add event listeners */
-  document.querySelector("input.button").addEventListener(up, newGame, false);
+  document.getElementById("new_game").addEventListener(up, newGame, false);
   document.getElementById("ai_first").addEventListener(up, getMoveFromAI, false);
   if (hasTouch) {
-    document.querySelector("input.button").addEventListener("touchend", newGame, false);
+    document.getElementById("new_game").addEventListener("touchend", newGame, false);
     document.getElementById("ai_first").addEventListener("touchend", getMoveFromAI, false);
   }
 
