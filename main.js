@@ -148,9 +148,10 @@ function getMoveFromAI() {
   document.getElementById("ai_first").disabled = true;
   var currentPlayer = getCurrentPlayer()
   var client = new HttpClient();
+  document.getElementById("label").textContent="AI is thinking...";
   client.get('/public/game/ai_server.py?board='+String(board)+'&p='+currentPlayer, function(response) {
       // do something with response
-      console.log(response)
+      document.getElementById("label").textContent="Game In Progress";
       fillSquareWithMarker(document.getElementById(parseInt(response)), currentPlayer);
       updateBoard(parseInt(response), currentPlayer);
       checkForWinner();
