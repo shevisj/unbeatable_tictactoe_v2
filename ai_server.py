@@ -96,6 +96,10 @@ print
 d = cgi.parse_qs(os.environ['QUERY_STRING'])
 if "board" in d:
     board = str(d["board"][0]).split(',')
+    if "p" in d:
+        player = str(d["p"][0])
+        if player == "X":
+            opp = "O"
     if 'X' in board or 'O' in board:
         node = Minimax(board, 0, 0, player)
         print the_move
