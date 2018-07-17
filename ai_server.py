@@ -1,6 +1,12 @@
 #!/usr/bin/env python
+# enable debugging
+import cgitb
+cgitb.enable()
 
+import cgi
+import os
 import copy
+import random
 
 the_move = 3
 player = "O"
@@ -84,20 +90,16 @@ def Minimax(a_board, value, depth, symbol):
         return scores[minScoreIndex]
 
 
-# enable debugging
-import cgitb
-cgitb.enable()
-
-import cgi
-import os
-
 print "Content-type: text/html"
 print
 
 d = cgi.parse_qs(os.environ['QUERY_STRING'])
 if "board" in d:
     board = str(d["board"][0]).split(',')
-    node = Minimax(board, 0, 0, player)
-    print the_move
+    if 'X' in board or 'O' in board:
+        node = Minimax(board, 0, 0, player)
+        print the_move
+    else:
+        print random.choice([0, 2, 6, 8])
 else:
     print "Invalid query string."
