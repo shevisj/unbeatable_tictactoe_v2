@@ -107,7 +107,7 @@ def simple_app(environ, start_response):
 
 if __name__ == "__main__":
     try:
-        httpd = make_server('', 1337, simple_app)
+        httpd = make_server('0.0.0.0', 1337, simple_app)
         print "Serving on port 1337..."
         httpd.serve_forever()
     except KeyboardInterrupt as err:
