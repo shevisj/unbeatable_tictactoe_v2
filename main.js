@@ -73,10 +73,10 @@ function init() {
 
   /* add event listeners */
   document.querySelector("input.button").addEventListener(up, newGame, false);
-  document.getElementById("ai_first").addEventListener(up, getMoveFromAI(getCurrentPlayer()), false);
+  document.getElementById("ai_first").addEventListener(up, getMoveFromAI, false);
   if (hasTouch) {
     document.querySelector("input.button").addEventListener("touchend", newGame, false);
-    document.getElementById("ai_first").addEventListener("touchend", getMoveFromAI(getCurrentPlayer()), false);
+    document.getElementById("ai_first").addEventListener("touchend", getMoveFromAI, false);
   }
 
   squares = document.getElementsByTagName("td");
@@ -136,13 +136,14 @@ function squareSelected(evt, currentPlayer) {
       updateBoard(square.id, currentPlayer);
       if (!checkForWinner()) {
         switchPlayers();
-        getMoveFromAI(getCurrentPlayer());
+        getMoveFromAI();
       }
     }
   }
 }
 
-function getMoveFromAI(currentPlayer) {
+function getMoveFromAI() {
+  var currentPlayer = getCurrentPlayer()
   var client = new HttpClient();
   client.get('/public/game/ai_server.py?board='+String(board)+'&p='+currentPlayer, function(response) {
       // do something with response
